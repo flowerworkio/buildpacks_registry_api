@@ -3,16 +3,10 @@ defmodule BuildpacksRegistryApi do
   Documentation for `BuildpacksRegistryApi`.
   """
 
-  @doc """
-  Hello world.
+  use Application
 
-  ## Examples
-
-      iex> BuildpacksRegistryApi.hello()
-      :world
-
-  """
-  def hello do
-    :world
+  def start(_type, _args) do
+    IO.puts("Starting buildpacks registry API app...")
+    BuildpacksRegistryApi.Supervisor.start_link()
   end
 end
