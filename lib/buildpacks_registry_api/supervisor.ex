@@ -6,7 +6,6 @@ defmodule BuildpacksRegistryApi.Supervisor do
     Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  @spec init(:ok) :: {:ok, {%{intensity: any, period: any, strategy: any}, list}}
   def init(:ok) do
     children = [
       BuildpacksRegistryApi.CacheServer
