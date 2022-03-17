@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+describe() {
+  echo "--- $1…"
+}
+
+asdf_add_to_shell() {
+  if [ -f .tool-versions ]; then
+    describe "Install asdf tool versions"
+    . $HOME/.asdf/asdf.sh
+  fi
+}
+
+case $BUILDKITE_STEP_KEY in
+  test)
+    asdf_add_to_shell
+    ;;
+  *)
+    describe "Skipping pre-command hook"
+    ;;
+esac

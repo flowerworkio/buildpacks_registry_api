@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+source bin/functions.sh
+
+set +u
+if [ "$CI" == "true" ]; then
+  export KERL_BUILD_DOCS=no
+  export KERL_INSTALL_HTMLDOCS=no
+  export KERL_INSTALL_MANPAGES=no
+  export MIX_ENV=test
+fi
+set -u
+
+asdf_add_plugins
+asdf_update_plugins
+asdf_install_tools
+elixir_install_hex_and_rebar
+
+describe ":elixir: getting dependencies"
+mix deps.get

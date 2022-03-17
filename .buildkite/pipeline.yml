@@ -1,0 +1,21 @@
+elixir-cache: &elixir-cache
+  id: elixir
+  key: "v1-cache-{{ id }}-{{ runner.os }}-{{ checksum 'mix.lock' }}"
+  restore-keys:
+    - "v1-cache-{{ id }}-{{ runner.os }}-"
+    - "v1-cache-{{ id }}-"
+  backend: s3
+  s3:
+    bucket: buildkite-cache-bucket
+  paths:
+    - _build
+    - deps
+
+all-plugins: &all-plugins
+  - gencer/cache#v2.4.10: *elixir-cache
+
+steps:
+  - label: "Run tests :elixir:"
+    key: test
+    command: ./bin/ci
+    plugins: *all-plugins

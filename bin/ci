@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+source bin/functions.sh
+
+./bin/update
+
+describe ":elixir: tests"
+mix test
+
+describe ":elixir: check formatting"
+mix format --check-formatted
