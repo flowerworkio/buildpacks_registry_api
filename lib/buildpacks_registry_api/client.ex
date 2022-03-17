@@ -13,7 +13,7 @@ defmodule BuildpacksRegistryApi.Client do
   defp endpoint, do: config()[:endpoint]
 
   @impl true
-  def process_url(url) do
+  def process_request_url(url) do
     endpoint() <> url
   end
 
@@ -55,7 +55,7 @@ defmodule BuildpacksRegistryApi.Client do
     body
   end
 
-  def buildpack_version_details(namespace, name, version) do
+  def buildpack_version_info(namespace, name, version) do
     {:ok, %HTTPoison.Response{body: body, status_code: 200}} =
       __MODULE__.get("/buildpacks/#{namespace}/#{name}/#{version}")
 

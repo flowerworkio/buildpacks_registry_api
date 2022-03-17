@@ -4,6 +4,6 @@ defmodule BuildpacksRegistryApiTest do
 
   test "start_link" do
     Application.stop(:buildpacks_registry_api)
-    assert {:ok, _} = BuildpacksRegistryApi.start("", "")
+    assert {:ok, _} = BuildpacksRegistryApi.start("", env: :test)
   end
 end
