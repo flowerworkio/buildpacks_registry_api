@@ -21,7 +21,6 @@ defmodule BuildpacksRegistryApi.MixProject do
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @source_url,
-      organization: "flowerworkio",
       package: package(),
       source_url: @source_url,
       start_permanent: Mix.env() == :prod,
@@ -42,6 +41,7 @@ defmodule BuildpacksRegistryApi.MixProject do
       An API client for the buildpacks registry with caching.
       """,
       maintainers: ["Patrick H Wiseman"],
+      organization: "flowerworkio",
       licenses: ["Apache-2.0"],
       links: %{
         "Source code" => @source_url,
