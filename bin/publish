@@ -3,13 +3,22 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 source bin/functions.sh
 
-./bin/update
+export MIX_ENV="prod"
+
+describe ":elixir: clean everything :broom:"
+mix clean
+mix deps.clean
+
+describe ":elixir: getting dependencies"
+mix deps.get
+
+describe ":elixir: compiling package"
+mix compile
 
 version="v$(mix run -e "IO.puts BuildpacksRegistryApi.MixProject.version")"
-
 describe "Creating git tag $version"
 git tag $version
 git push origin --tags
 
-describe "Publishing the package to hex"
+describe "Publishing the package to :flowerwork: organization on hex.pm"
 mix hex.publish --yes

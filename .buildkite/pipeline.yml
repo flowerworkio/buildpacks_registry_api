@@ -23,4 +23,3 @@ steps:
     key: publish
     command: ./bin/publish
     branches: main
-    plugins: *all-plugins
