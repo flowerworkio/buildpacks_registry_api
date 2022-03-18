@@ -7,6 +7,7 @@ defmodule BuildpacksRegistryApi.MixProject do
 
   @source_url "https://github.com/flowerworkio/buildpacks_registry_api"
   @api_spec_url "https://github.com/buildpacks/registry-api"
+  @buildpacks_registry_url "https://registry.buildpacks.io"
   @version "0.1.0"
   def version, do: @version
 
@@ -20,13 +21,8 @@ defmodule BuildpacksRegistryApi.MixProject do
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @source_url,
-      licenses: ["Apache-2.0"],
-      links: %{
-        "Source code" => @source_url,
-        "API Spec" => @api_spec_url,
-        "Buildpacks Registry" => "https://registry.buildpacks.io"
-      },
       organization: "flowerworkio",
+      package: package(),
       source_url: @source_url,
       start_permanent: Mix.env() == :prod,
       version: "0.1.0"
@@ -37,6 +33,21 @@ defmodule BuildpacksRegistryApi.MixProject do
     [
       extra_applications: [:logger],
       mod: {BuildpacksRegistryApi, [env: Mix.env()]}
+    ]
+  end
+
+  defp package do
+    [
+      description: """
+      An API client for the buildpacks registry with caching.
+      """,
+      maintainers: ["Patrick H Wiseman"],
+      licenses: ["Apache-2.0"],
+      links: %{
+        "Source code" => @source_url,
+        "API Spec" => @api_spec_url,
+        "Buildpacks Registry" => @buildpacks_registry_url
+      }
     ]
   end
 
