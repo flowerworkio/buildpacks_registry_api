@@ -8,7 +8,7 @@ export MIX_ENV="prod"
 describe ":elixir: :git: clean up everything :broom:"
 mix clean
 mix deps.clean --all
-git fetch --prune-tags
+git fetch --prune --prune-tags --tags origin
 
 describe ":elixir: getting dependencies"
 mix deps.get
