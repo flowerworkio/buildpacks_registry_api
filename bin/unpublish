@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+source bin/functions.sh
+
+version=$1
+
+describe "Unpublishing :hex: package"
+mix hex.publish --revert $version
+
+describe "Updating :git:"
+git fetch --prune --prune-tags --tags origin
+
+describe "Untagging :git: tag $version"
+git tag -d $version
+git push origin :v$version
