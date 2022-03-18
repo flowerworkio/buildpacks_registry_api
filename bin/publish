@@ -5,9 +5,10 @@ source bin/functions.sh
 
 export MIX_ENV="prod"
 
-describe ":elixir: clean everything :broom:"
+describe ":elixir: :git: clean up everything :broom:"
 mix clean
 mix deps.clean --all
+git fetch --prune-tags
 
 describe ":elixir: getting dependencies"
 mix deps.get
