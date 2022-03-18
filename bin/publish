@@ -3,23 +3,21 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 source bin/functions.sh
 
-describe ":elixir: :git: clean up everything :broom:"
+describe ":elixir: clean :broom:"
 mix clean
 mix deps.clean --all
-git fetch --prune --prune-tags --tags origin
 
-describe ":elixir: getting dependencies"
+describe ":elixir: get dependencies"
 mix deps.get
 
-export MIX_ENV=prod
-
-describe ":elixir: compiling package"
+describe ":elixir: compile package"
 mix compile
-
-version="v$(mix run -e "IO.puts BuildpacksRegistryApi.MixProject.version")"
-describe "Creating git tag $version"
-git tag $version
-git push origin --tags
 
 describe "Publishing the package to :flowerwork: organization on hex.pm"
 mix hex.publish --yes
+
+version="v$(mix run -e "IO.puts BuildpacksRegistryApi.MixProject.version")"
+describe "Creating git tag $version"
+git fetch --prune --prune-tags --tags origin
+git tag $version
+git push origin --tags
