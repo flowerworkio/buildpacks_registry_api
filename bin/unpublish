@@ -10,5 +10,5 @@ mix hex.publish --revert $version
 
 describe "Untagging :git: tag $version"
 git fetch --prune --prune-tags --tags origin
-git tag -d $version
+git tag -d v$version
 git push origin :v$version
