@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+source bin/functions.sh
+
+version="v$1"
+
+describe "Creating git tag $version"
+git tag $version
+git push origin --tags
+
+describe "Publishing the package to hex"
+mix hex.publish --yes
