@@ -19,3 +19,7 @@ steps:
     key: test
     command: ./bin/ci
     plugins: *all-plugins
+  - label: "Publish to :hex:"
+    key: publish
+    command: ./bin/publish
+    branches: main
