@@ -7,7 +7,7 @@ export MIX_ENV="prod"
 
 describe ":elixir: clean everything :broom:"
 mix clean
-mix deps.clean
+mix deps.clean --all
 
 describe ":elixir: getting dependencies"
 mix deps.get
