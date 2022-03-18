@@ -3,6 +3,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 source bin/functions.sh
 
+./bin/update
+
 version="v$(mix run -e "IO.puts BuildpacksRegistryApi.MixProject.version")"
 
 describe "Creating git tag $version"
