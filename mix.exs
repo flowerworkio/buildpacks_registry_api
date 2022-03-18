@@ -53,6 +53,7 @@ defmodule BuildpacksRegistryApi.MixProject do
 
   defp deps do
     [
+      {:ex_doc, "~> 0.27", only: :dev, runtime: false},
       {:httpoison, "~> 1.8"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.5", only: [:dev, :test]}
