@@ -3,7 +3,7 @@ defmodule BuildpacksRegistryApi.Client do
   HTTP Client implementation for Buildpacks Registry API
   Ref: https://github.com/buildpacks/registry-api
   """
-  use HTTPoison.Base
+  require Logger
 
   # HTTPoison Config
   def config do
@@ -12,53 +12,229 @@ defmodule BuildpacksRegistryApi.Client do
 
   defp endpoint, do: config()[:endpoint]
 
-  @impl true
-  def process_request_url(url) do
-    endpoint() <> url
-  end
+  @spec search(binary()) :: list(map())
+  @doc """
 
-  @impl true
-  def process_request_options(options) do
-    hackney = Keyword.get(options, :hackney, [])
-    Keyword.put(options, :hackney, hackney)
-  end
+  Searches the registry for a buildpacks that match a string term.
 
-  @impl true
-  def process_request_headers(headers) do
-    headers ++
+  ## Examples
+
+    In the example below, we seach for ruby buildpacks and receive back a List of buildpack object maps:
+      BuildpacksRegistryApi.Client.search("ruby")
       [
-        {"Accept", "application/json"}
+        %{
+          latest: %{
+            addr:
+              "public.ecr.aws/heroku-buildpacks/heroku-ruby-buildpack@sha256:3eeb3773cdbd29d4fb0d578f7781fe8c525de73593480e2740b7143262e5bef5",
+            created_at: "2021-10-27T21:00:43.307Z",
+            description: "",
+            homepage: "",
+            id: "f7c0dcc3-55ab-46b9-9a89-e35ff60aa7f8",
+            licenses: nil,
+            name: "ruby",
+            namespace: "heroku",
+            stacks: ["heroku-18", "heroku-20"],
+            updated_at: "2022-03-17T20:28:16.367Z",
+            version: "0.1.3",
+            version_major: "0",
+            version_minor: "1",
+            version_patch: "3",
+            yanked: false
+          },
+          versions: [
+            %{
+              _link: "https://registry.buildpacks.io/api/v1/buildpacks/heroku/ruby/0.1.3",
+              version: "0.1.3"
+            },
+            %{
+              _link: "https://registry.buildpacks.io/api/v1/buildpacks/heroku/ruby/0.1.2",
+              version: "0.1.2"
+            },
+            %{
+              _link: "https://registry.buildpacks.io/api/v1/buildpacks/heroku/ruby/0.1.1",
+              version: "0.1.1"
+            },
+            %{
+              _link: "https://registry.buildpacks.io/api/v1/buildpacks/heroku/ruby/0.1.0",
+              version: "0.1.0"
+            }
+          ]
+        },
+        %{
+          latest: %{
+            addr:
+              "index.docker.io/paketobuildpacks/ruby@sha256:19254ce071ad2139309280e0f88f19f7b44ff58e684c6ac834f48d1b87b946d5",
+            created_at: "2022-02-04T14:43:47.833Z",
+            description: "A language family buildpack for building Ruby apps",
+            homepage: "https://github.com/paketo-buildpacks/ruby",
+            id: "d357aacd-b201-4dee-8de3-913ecc3b02bf",
+            licenses: ["Apache-2.0"],
+            name: "ruby",
+            namespace: "paketo-buildpacks",
+            stacks: ["io.buildpacks.stacks.bionic"],
+            updated_at: "2022-03-17T20:28:13.408Z",
+            version: "0.11.0",
+            version_major: "0",
+            version_minor: "11",
+            version_patch: "0",
+            yanked: false
+          },
+          versions: [
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.11.0",
+              version: "0.11.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.10.0",
+              version: "0.10.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.9.1",
+              version: "0.9.1"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.9.0",
+              version: "0.9.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.8.0",
+              version: "0.8.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.7.3",
+              version: "0.7.3"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.7.2",
+              version: "0.7.2"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.7.1",
+              version: "0.7.1"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.7.0",
+              version: "0.7.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.6.0",
+              version: "0.6.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.5.0",
+              version: "0.5.0"
+            },
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/ruby/0.4.0",
+              version: "0.4.0"
+            }
+          ]
+        },
+        %{
+          latest: %{
+            addr:
+              "index.docker.io/paketobuildpacks/passenger@sha256:61fa1b7b6eaa0bdb24a8bc24b5d63ad17a41b4d6ac194daf1d9be04a5ceba58b",
+            created_at: "2022-03-07T15:17:52.865Z",
+            description: "A buildpack for starting a passenger server for a Ruby app",
+            homepage: "https://github.com/paketo-buildpacks/passenger",
+            id: "b15e5032-10a6-4da9-8ae8-87e9c0dcfc75",
+            licenses: ["Apache-2.0"],
+            name: "passenger",
+            namespace: "paketo-buildpacks",
+            stacks: ["io.buildpacks.stacks.bionic"],
+            updated_at: "2022-03-17T20:28:13.149Z",
+            version: "0.4.0",
+            version_major: "0",
+            version_minor: "4",
+            version_patch: "0",
+            yanked: false
+          },
+          versions: [
+            %{
+              _link:
+                "https://registry.buildpacks.io/api/v1/buildpacks/paketo-buildpacks/passenger/0.4.0",
+              version: "0.4.0"
+            }
+          ]
+        }
       ]
-  end
-
-  @impl true
-  def process_response_body(body) do
-    case Jason.decode(body, keys: :atoms) do
-      {:ok, json} -> json
-      _ -> nil
-    end
-  end
-
+  """
   def search(term) do
     params = %{matches: term}
 
-    {:ok, %HTTPoison.Response{body: body, status_code: 200}} =
-      __MODULE__.get("/search", [], params: params)
-
-    body
+    response = get("/search", params)
+    Jason.decode!(response, keys: :atoms)
   end
 
   def buildpack_version_list(namespace, name) do
-    {:ok, %HTTPoison.Response{body: body, status_code: 200}} =
-      __MODULE__.get("/buildpacks/#{namespace}/#{name}")
-
-    body
+    response = get("/buildpacks/#{namespace}/#{name}")
+    Jason.decode!(response, keys: :atoms)
   end
 
   def buildpack_version_info(namespace, name, version) do
-    {:ok, %HTTPoison.Response{body: body, status_code: 200}} =
-      __MODULE__.get("/buildpacks/#{namespace}/#{name}/#{version}")
+    response = get("/buildpacks/#{namespace}/#{name}/#{version}")
+    Jason.decode!(response, keys: :atoms)
+  end
 
-    body
+  defp get(path, query_params \\ %{}) do
+    query_params =
+      query_params
+      |> Enum.map(fn {key, value} -> "#{key}=#{value}" end)
+      |> Enum.join("&")
+
+    url = endpoint() <> path <> "?" <> query_params
+    url = String.to_charlist(url)
+    Logger.debug("Fetching #{url}")
+
+    {:ok, _} = Application.ensure_all_started(:inets)
+    {:ok, _} = Application.ensure_all_started(:ssl)
+
+    if proxy = System.get_env("HTTP_PROXY") || System.get_env("http_proxy") do
+      Logger.debug("Using HTTP_PROXY: #{proxy}")
+      %{host: host, port: port} = URI.parse(proxy)
+      :httpc.set_options([{:proxy, {{String.to_charlist(host), port}, []}}])
+    end
+
+    if proxy = System.get_env("HTTPS_PROXY") || System.get_env("https_proxy") do
+      Logger.debug("Using HTTPS_PROXY: #{proxy}")
+      %{host: host, port: port} = URI.parse(proxy)
+      :httpc.set_options([{:https_proxy, {{String.to_charlist(host), port}, []}}])
+    end
+
+    # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
+    cacertfile = CAStore.file_path() |> String.to_charlist()
+
+    http_options = [
+      ssl: [
+        verify: :verify_peer,
+        cacertfile: cacertfile,
+        depth: 2,
+        customize_hostname_check: [
+          match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
+        ]
+      ]
+    ]
+
+    options = [body_format: :binary]
+
+    case :httpc.request(:get, {url, []}, http_options, options) do
+      {:ok, {{_, 200, _}, _headers, body}} ->
+        body
+
+      other ->
+        raise "couldn't fetch #{url}: #{inspect(other)}"
+    end
   end
 end

@@ -34,7 +34,7 @@ defmodule BuildpacksRegistryApi.MixProject do
 
   def application do
     [
-      extra_applications: [:logger],
+      extra_applications: [:logger, :inets],
       mod: {BuildpacksRegistryApi, [env: Mix.env()]}
     ]
   end
@@ -57,7 +57,7 @@ defmodule BuildpacksRegistryApi.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.27", only: :dev, runtime: false},
-      {:httpoison, "~> 1.8"},
+      {:castore, ">= 0.0.0"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.5", only: [:dev, :test]}
     ]
