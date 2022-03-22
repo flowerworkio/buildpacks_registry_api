@@ -18,6 +18,10 @@ defmodule BuildpacksRegistryApi.MixProject do
       description: """
       An API client for the buildpacks registry with caching.
       """,
+      docs: [
+        logo: "./assets/buildpacks.png",
+        extras: ["README.md"]
+      ],
       elixir: "~> 1.13",
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @source_url,
