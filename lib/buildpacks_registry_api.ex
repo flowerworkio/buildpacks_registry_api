@@ -7,7 +7,7 @@ defmodule BuildpacksRegistryApi do
 
   def start(_type, args \\ []) do
     children = [
-      BuildpacksRegistryApi.CacheServer
+      BuildpacksRegistryApi.CacheClient
     ]
 
     mock_server_children = [
