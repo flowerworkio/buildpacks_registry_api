@@ -41,7 +41,6 @@ defmodule BuildpacksRegistryApi.MixProject do
       An API client for the buildpacks registry with caching.
       """,
       maintainers: ["Patrick H Wiseman"],
-      organization: "flowerworkio",
       licenses: ["Apache-2.0"],
       links: %{
         "Source code" => @source_url,
