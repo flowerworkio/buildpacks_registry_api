@@ -1,4 +1,5 @@
 defmodule BuildpacksRegistryApi.MockServer do
+  @moduledoc false
   use Plug.Router
 
   plug(Plug.Parsers,
