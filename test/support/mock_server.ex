@@ -217,6 +217,10 @@ defmodule BuildpacksRegistryApi.MockServer do
     })
   end
 
+  get "/api/v1/healthz" do
+    success(conn, %{status: "OK"})
+  end
+
   get "/*_rest" do
     failure(conn)
   end

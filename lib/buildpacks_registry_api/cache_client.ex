@@ -34,11 +34,24 @@ defmodule BuildpacksRegistryApi.CacheClient do
   end
 
   @doc """
+  Gets the config for the cache client.
+  """
+  @spec config() :: map()
+  def config() do
+    GenServer.call(@name, :config)
+  end
+
+  @doc """
   Sets the cache timeout in milliseconds.
   """
   @spec set_cache_timeout(integer) :: :ok
   def set_cache_timeout(timeout_in_ms) do
     GenServer.cast(@name, {:set_cache_timeout, timeout_in_ms})
+  end
+
+  @doc false
+  def get(path, query_params) do
+    GenServer.call(@name, {:return_cache_or_get, path, query_params})
   end
 
   @spec search(binary()) :: list(map())
@@ -299,6 +312,14 @@ defmodule BuildpacksRegistryApi.CacheClient do
   end
 
   @impl true
+  def handle_call(:config, _from, state) do
+    {:reply,
+     %{
+       cache_timeout: state.cache_timeout
+     }, state}
+  end
+
+  @impl true
   def handle_call({:return_cache_or_get, path, params}, _from, %State{} = state) do
     url = BuildpacksRegistryApi.Client.process_url(path, params)
     now = Time.utc_now()
@@ -313,14 +334,13 @@ defmodule BuildpacksRegistryApi.CacheClient do
         {:reply, response, new_state}
 
       cache_entry ->
-        cache_expires_at = Time.add(cache_entry.fetched_at, state.cache_timeout, :milliseconds)
+        cache_expires_at = Time.add(cache_entry.fetched_at, state.cache_timeout, :millisecond)
 
         case cache_expires_at > now do
           true ->
             Logger.debug("#{url} cache hit")
             response = cache_entry.response
-            new_state = state
-            {:reply, response, new_state}
+            {:reply, response, state}
 
           false ->
             Logger.debug("#{url} cache expiration")
