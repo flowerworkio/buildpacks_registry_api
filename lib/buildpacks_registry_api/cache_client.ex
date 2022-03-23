@@ -214,9 +214,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
       ]
   """
   def search(term) do
-    path = "/search"
-    query_params = %{matches: term}
-    GenServer.call(@name, {:return_cache_or_get, path, query_params})
+    get("/search", %{matches: term})
   end
 
   @doc """
@@ -257,9 +255,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
   """
   @spec buildpack_version_list(binary(), binary()) :: map()
   def buildpack_version_list(namespace, name) do
-    path = "/buildpacks/#{namespace}/#{name}"
-    query_params = %{}
-    GenServer.call(@name, {:return_cache_or_get, path, query_params})
+    get("/buildpacks/#{namespace}/#{name}", %{})
   end
 
   @doc """
@@ -288,9 +284,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
   """
   @spec buildpack_version_info(binary(), binary(), binary()) :: map()
   def buildpack_version_info(namespace, name, version) do
-    path = "/buildpacks/#{namespace}/#{name}/#{version}"
-    query_params = %{}
-    GenServer.call(@name, {:return_cache_or_get, path, query_params})
+    get("/buildpacks/#{namespace}/#{name}/#{version}", %{})
   end
 
   # Server callbacks
