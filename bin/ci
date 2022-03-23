@@ -10,3 +10,9 @@ mix test
 
 describe ":elixir: check formatting"
 mix format --check-formatted
+
+set +u
+if [ -n "$REPO_TOKEN" ]; then
+  coveralls_report_coverage $REPO_TOKEN
+fi
+set -u
