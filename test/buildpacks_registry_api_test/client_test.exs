@@ -7,6 +7,10 @@ defmodule BuildpacksRegistryApi.ClientTest do
     assert Client.config() == [endpoint: "http://localhost:9000/api/v1"]
   end
 
+  test "#get bad URL raises RuntimeError that it couldn't fetch url" do
+    assert_raise RuntimeError, ~r/couldn\'t fetch/, fn -> Client.get("/bogus_url") end
+  end
+
   test "GET /search returns a list of buildpacks" do
     response = Client.search("ruby")
     assert response |> Enum.count() == 3

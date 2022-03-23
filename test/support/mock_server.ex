@@ -217,8 +217,17 @@ defmodule BuildpacksRegistryApi.MockServer do
     })
   end
 
+  get "/*_rest" do
+    failure(conn)
+  end
+
   defp success(conn, body) do
     conn
     |> Plug.Conn.send_resp(200, Jason.encode!(body))
+  end
+
+  defp failure(conn) do
+    conn
+    |> Plug.Conn.send_resp(500, Jason.encode!(%{message: "an error message"}))
   end
 end
