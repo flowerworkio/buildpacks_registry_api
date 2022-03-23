@@ -15,6 +15,7 @@ defmodule BuildpacksRegistryApi.MixProject do
     [
       app: :buildpacks_registry_api,
       deps: deps(),
+      test_coverage: [tool: ExCoveralls],
       description: """
       An API client for the buildpacks registry with caching.
       """,
@@ -26,6 +27,12 @@ defmodule BuildpacksRegistryApi.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       homepage_url: @source_url,
       package: package(),
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
       source_url: @source_url,
       start_permanent: Mix.env() == :prod,
       version: @version
@@ -56,6 +63,7 @@ defmodule BuildpacksRegistryApi.MixProject do
 
   defp deps do
     [
+      {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, "~> 0.27", only: :dev, runtime: false},
       {:castore, ">= 0.0.0"},
       {:jason, "~> 1.0"},
