@@ -321,11 +321,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
     case state.cache |> Map.get(url) do
       nil ->
         Logger.debug("#{url} cache miss")
-        response = Client.get(path, params) |> Jason.decode!(keys: :atoms)
-        new_cache = Map.merge(state.cache, %{url => %{response: response, fetched_at: now}})
-        new_state = %State{state | cache: new_cache}
-
-        {:reply, response, new_state}
+        fetch_and_cache(path, params, state)
 
       cache_entry ->
         cache_expires_at = Time.add(cache_entry.fetched_at, state.cache_timeout, :millisecond)
@@ -338,12 +334,25 @@ defmodule BuildpacksRegistryApi.CacheClient do
 
           false ->
             Logger.debug("#{url} cache expiration")
-            response = Client.get(path, params) |> Jason.decode!(keys: :atoms)
-            new_cache = Map.merge(state.cache, %{url => %{response: response, fetched_at: now}})
-            new_state = %State{state | cache: new_cache}
-
-            {:reply, response, new_state}
+            fetch_and_cache(path, params, state)
         end
     end
+  end
+
+  defp fetch_and_cache(path, params, state) do
+    response = Client.get(path, params) |> Jason.decode!(keys: :atoms)
+    url = BuildpacksRegistryApi.Client.process_url(path, params)
+
+    new_cache =
+      Map.merge(state.cache, %{
+        url => %{
+          response: response,
+          fetched_at: Time.utc_now()
+        }
+      })
+
+    new_state = %State{state | cache: new_cache}
+
+    {:reply, response, new_state}
   end
 end
