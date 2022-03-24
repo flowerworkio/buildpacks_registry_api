@@ -61,8 +61,8 @@ defmodule BuildpacksRegistryApi.CacheClient do
 
   ## Examples
 
-    In the example below, we seach for ruby buildpacks and receive back a List of buildpack object maps:
-      BuildpacksRegistryApi.Client.search("ruby")
+  In the example below, we seach for ruby buildpacks and receive back a List of buildpack object maps:
+      iex> BuildpacksRegistryApi.Client.search("ruby")
       [
         %{
           latest: %{
@@ -221,37 +221,37 @@ defmodule BuildpacksRegistryApi.CacheClient do
   Get a list of buildpack versions for the namespaced buildpack. Returns a buildpack version map.
 
   ## Examples
-    iex> BuildpacksRegistryApi.Client.buildpack_version_list("heroku", "ruby")
-    %{
-      latest: %{
-        description: "",
-        homepage: "",
-        id: "f7c0dcc3-55ab-46b9-9a89-e35ff60aa7f8",
-        licenses: nil,
-        name: "ruby",
-        namespace: "heroku",
-        stacks: ["heroku-18", "heroku-20"],
-        version: "0.1.3"
-      },
-      versions: [
-        %{
-          _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.3",
+      iex> BuildpacksRegistryApi.Client.buildpack_version_list("heroku", "ruby")
+      %{
+        latest: %{
+          description: "",
+          homepage: "",
+          id: "f7c0dcc3-55ab-46b9-9a89-e35ff60aa7f8",
+          licenses: nil,
+          name: "ruby",
+          namespace: "heroku",
+          stacks: ["heroku-18", "heroku-20"],
           version: "0.1.3"
         },
-        %{
-          _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.2",
-          version: "0.1.2"
-        },
-        %{
-          _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.1",
-          version: "0.1.1"
-        },
-        %{
-          _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.0",
-          version: "0.1.0"
-        }
-      ]
-    }
+        versions: [
+          %{
+            _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.3",
+            version: "0.1.3"
+          },
+          %{
+            _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.2",
+            version: "0.1.2"
+          },
+          %{
+            _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.1",
+            version: "0.1.1"
+          },
+          %{
+            _link: "https://registry.buildpacks.io//api/v1/buildpacks/heroku/ruby/0.1.0",
+            version: "0.1.0"
+          }
+        ]
+      }
   """
   @spec buildpack_version_list(binary(), binary()) :: map()
   def buildpack_version_list(namespace, name) do
@@ -262,25 +262,25 @@ defmodule BuildpacksRegistryApi.CacheClient do
   Returns detailed information for the buildpack version.any()
 
   ## Examples
-    iex> BuildpacksRegistryApi.Client.buildpack_version_info("heroku", "ruby", "0.1.3")
-    %{
-      addr:
-        "public.ecr.aws/heroku-buildpacks/heroku-ruby-buildpack@sha256:3eeb3773cdbd29d4fb0d578f7781fe8c525de73593480e2740b7143262e5bef5",
-      created_at: "2021-10-27T21:00:43.307Z",
-      description: "",
-      homepage: "",
-      id: "f7c0dcc3-55ab-46b9-9a89-e35ff60aa7f8",
-      licenses: nil,
-      name: "ruby",
-      namespace: "heroku",
-      stacks: ["heroku-18", "heroku-20"],
-      updated_at: "2022-03-17T21:20:26.981Z",
-      version: "0.1.3",
-      version_major: "0",
-      version_minor: "1",
-      version_patch: "3",
-      yanked: false
-    }
+      iex> BuildpacksRegistryApi.Client.buildpack_version_info("heroku", "ruby", "0.1.3")
+      %{
+        addr:
+          "public.ecr.aws/heroku-buildpacks/heroku-ruby-buildpack@sha256:3eeb3773cdbd29d4fb0d578f7781fe8c525de73593480e2740b7143262e5bef5",
+        created_at: "2021-10-27T21:00:43.307Z",
+        description: "",
+        homepage: "",
+        id: "f7c0dcc3-55ab-46b9-9a89-e35ff60aa7f8",
+        licenses: nil,
+        name: "ruby",
+        namespace: "heroku",
+        stacks: ["heroku-18", "heroku-20"],
+        updated_at: "2022-03-17T21:20:26.981Z",
+        version: "0.1.3",
+        version_major: "0",
+        version_minor: "1",
+        version_patch: "3",
+        yanked: false
+      }
   """
   @spec buildpack_version_info(binary(), binary(), binary()) :: map()
   def buildpack_version_info(namespace, name, version) do
