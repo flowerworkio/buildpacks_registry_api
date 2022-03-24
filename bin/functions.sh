@@ -55,7 +55,11 @@ coveralls_report_coverage() {
   local author_name=$(git log -1 --pretty=format:'%ae')
   local sha=$(git rev-parse HEAD)
   local message=$(git log -1 --pretty=%B)
-  local branch=$(git rev-parse --abbrev-ref HEAD)
+  if [ -n "$CI" ]; then
+    local branch=$BUILDKITE_BRANCH
+  else
+    local branch=$(git rev-parse --abbrev-ref HEAD)
+  fi
   mix coveralls.post \
     --token "$repo_token" \
     --branch "$branch" \
