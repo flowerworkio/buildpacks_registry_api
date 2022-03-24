@@ -1,7 +1,7 @@
 # Buildpacks Registry API for Elixir
 
 [![Build status](https://badge.buildkite.com/e2f3cfac457b7e836ca3a434c8e8a5ad22cecd84432270630a.svg)](https://buildkite.com/flowerwork/buildpacks-registry-api)
-[![Coverage Status](https://coveralls.io/repos/github/flowerworkio/buildpacks_registry_api/badge.svg?branch=phw-add-docs)](https://coveralls.io/github/flowerworkio/buildpacks_registry_api?branch=phw-add-docs)
+[![Coverage Status](https://coveralls.io/repos/github/flowerworkio/buildpacks_registry_api/badge.svg?branch=main)](https://coveralls.io/github/flowerworkio/buildpacks_registry_api?branch=main)
 
 ## Installation
 
