@@ -98,7 +98,7 @@ defmodule BuildpacksRegistryApi.CacheClientTest do
            ]
   end
 
-  describe "#get" do
+  describe "#get!" do
     test "with no cache it returns the API call response and adds it to cache" do
       now = Time.utc_now()
 
