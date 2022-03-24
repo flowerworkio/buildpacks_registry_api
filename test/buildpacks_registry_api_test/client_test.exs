@@ -7,20 +7,8 @@ defmodule BuildpacksRegistryApi.ClientTest do
     assert Client.config() == [endpoint: "http://localhost:9000/api/v1"]
   end
 
-  test "#process_url adds relative url to endpoint" do
-    assert Client.process_request_url("/path") == "http://localhost:9000/api/v1/path"
-  end
-
-  test "#process_request_headers sets Accept header to application/json" do
-    assert Client.process_request_headers([]) == [{"Accept", "application/json"}]
-  end
-
-  test "#process_response_body parses valid JSON into map with symbols" do
-    assert Client.process_response_body("{\"foo\": \"bar\"}") == %{foo: "bar"}
-  end
-
-  test "#process_response_body returns nil for invalid JSON" do
-    assert Client.process_response_body("") == nil
+  test "#get bad URL raises RuntimeError that it couldn't fetch url" do
+    assert_raise RuntimeError, ~r/couldn\'t fetch/, fn -> Client.get!("/bogus_url") end
   end
 
   test "GET /search returns a list of buildpacks" do

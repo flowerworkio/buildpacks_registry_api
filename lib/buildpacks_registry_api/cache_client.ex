@@ -1,24 +1,58 @@
-defmodule BuildpacksRegistryApi.Client do
+defmodule BuildpacksRegistryApi.CacheClient do
   @moduledoc """
-  HTTP Client implementation for the [Buildpacks Registry API](https://github.com/buildpacks/registry-api)
+  GenServer cached client implementation for the [Buildpacks Registry API](https://github.com/buildpacks/registry-api)
+
+  Default timeout is one (1) hour.
   """
+
+  @name :buildpacks_registry_api_cache_client
+
+  use GenServer
+
   require Logger
 
-  # HTTPoison Config
-  @doc """
-  Returns the keyword list for the BuildpacksRegistryApi.Client configuration
+  alias BuildpacksRegistryApi.Client
 
-  ## Examples
-
-  This example demonstrates the default configuration:
-      iex> BuildpacksRegistryApi.Client.config()
-      [endpoint: "http://localhost:9000/api/v1"]
-  """
-  def config do
-    Application.get_all_env(BuildpacksRegistryApi)
+  defmodule State do
+    @moduledoc false
+    defstruct cache_timeout: :timer.hours(1), cache: %{}
   end
 
-  defp endpoint, do: config()[:endpoint]
+  # Client functions
+  @spec start_link(any) :: :ignore | {:error, any} | {:ok, pid}
+  def start_link(_arg) do
+    Logger.info("Starting BuildpacksRegistryApi.CacheClient...")
+    GenServer.start_link(__MODULE__, %State{}, name: @name)
+  end
+
+  @doc """
+  Clears the cache.
+  """
+  @spec clear() :: :ok
+  def clear() do
+    GenServer.cast(@name, :clear)
+  end
+
+  @doc """
+  Gets the config for the cache client.
+  """
+  @spec config() :: map()
+  def config() do
+    GenServer.call(@name, :config)
+  end
+
+  @doc """
+  Sets the cache timeout in milliseconds.
+  """
+  @spec set_cache_timeout(integer) :: :ok
+  def set_cache_timeout(timeout_in_ms) do
+    GenServer.cast(@name, {:set_cache_timeout, timeout_in_ms})
+  end
+
+  @doc false
+  def get!(path, query_params) do
+    GenServer.call(@name, {:return_cache_or_get, path, query_params})
+  end
 
   @spec search(binary()) :: list(map())
   @doc """
@@ -180,9 +214,7 @@ defmodule BuildpacksRegistryApi.Client do
       ]
   """
   def search(term) do
-    params = %{matches: term}
-    response = get!("/search", params)
-    Jason.decode!(response, keys: :atoms)
+    get!("/search", %{matches: term})
   end
 
   @doc """
@@ -223,8 +255,7 @@ defmodule BuildpacksRegistryApi.Client do
   """
   @spec buildpack_version_list(binary(), binary()) :: map()
   def buildpack_version_list(namespace, name) do
-    response = get!("/buildpacks/#{namespace}/#{name}")
-    Jason.decode!(response, keys: :atoms)
+    get!("/buildpacks/#{namespace}/#{name}", %{})
   end
 
   @doc """
@@ -253,57 +284,75 @@ defmodule BuildpacksRegistryApi.Client do
   """
   @spec buildpack_version_info(binary(), binary(), binary()) :: map()
   def buildpack_version_info(namespace, name, version) do
-    response = get!("/buildpacks/#{namespace}/#{name}/#{version}")
-    Jason.decode!(response, keys: :atoms)
+    get!("/buildpacks/#{namespace}/#{name}/#{version}", %{})
   end
 
-  @doc """
-  Formats the URL with query parameters.
-
-  ## Examples
-    iex> BuildpacksRegistryApi.Client.process_url("/search", %{term: "ruby"})
-    "http://localhost:9000/api/v1/search?term=ruby"
-  """
-  def process_url(path, query_params) do
-    query_params =
-      query_params
-      |> Enum.map(fn {key, value} -> "#{key}=#{value}" end)
-      |> Enum.join("&")
-
-    endpoint() <> path <> "?" <> query_params
+  # Server callbacks
+  @impl true
+  def init(state) do
+    {:ok, state}
   end
 
-  @doc false
-  def get!(path, query_params \\ %{}) do
-    url = process_url(path, query_params)
-    url = String.to_charlist(url)
-    Logger.debug("Fetching #{url}")
+  @impl true
+  def handle_cast(:clear, state) do
+    Logger.debug("Clearing cache")
+    {:noreply, %{state | cache: %{}}}
+  end
 
-    {:ok, _} = Application.ensure_all_started(:inets)
-    {:ok, _} = Application.ensure_all_started(:ssl)
+  @impl true
+  def handle_cast({:set_cache_timeout, timeout_in_ms}, state) do
+    Logger.debug("Setting cache timeout to #{timeout_in_ms}")
+    {:noreply, %{state | cache_timeout: timeout_in_ms}}
+  end
 
-    # https://erlef.github.io/security-wg/secure_coding_and_deployment_hardening/inets
-    cacertfile = CAStore.file_path() |> String.to_charlist()
+  @impl true
+  def handle_call(:config, _from, state) do
+    {:reply,
+     %{
+       cache_timeout: state.cache_timeout
+     }, state}
+  end
 
-    http_options = [
-      ssl: [
-        verify: :verify_peer,
-        cacertfile: cacertfile,
-        depth: 2,
-        customize_hostname_check: [
-          match_fun: :public_key.pkix_verify_hostname_match_fun(:https)
-        ]
-      ]
-    ]
+  @impl true
+  def handle_call({:return_cache_or_get, path, params}, _from, %State{} = state) do
+    url = BuildpacksRegistryApi.Client.process_url(path, params)
+    now = Time.utc_now()
 
-    options = [body_format: :binary]
+    case state.cache |> Map.get(url) do
+      nil ->
+        Logger.debug("#{url} cache miss")
+        fetch_and_cache(path, params, state)
 
-    case :httpc.request(:get, {url, []}, http_options, options) do
-      {:ok, {{_, 200, _}, _headers, body}} ->
-        body
+      cache_entry ->
+        cache_expires_at = Time.add(cache_entry.fetched_at, state.cache_timeout, :millisecond)
 
-      other ->
-        raise "couldn't fetch #{url}: #{inspect(other)}"
+        case cache_expires_at > now do
+          true ->
+            Logger.debug("#{url} cache hit")
+            response = cache_entry.response
+            {:reply, response, state}
+
+          false ->
+            Logger.debug("#{url} cache expiration")
+            fetch_and_cache(path, params, state)
+        end
     end
+  end
+
+  defp fetch_and_cache(path, params, state) do
+    response = Client.get!(path, params) |> Jason.decode!(keys: :atoms)
+    url = BuildpacksRegistryApi.Client.process_url(path, params)
+
+    new_cache =
+      Map.merge(state.cache, %{
+        url => %{
+          response: response,
+          fetched_at: Time.utc_now()
+        }
+      })
+
+    new_state = %State{state | cache: new_cache}
+
+    {:reply, response, new_state}
   end
 end

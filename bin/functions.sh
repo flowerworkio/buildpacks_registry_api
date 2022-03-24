@@ -48,3 +48,18 @@ asdf_update_plugins() {
     asdf plugin-update --all
   fi
 }
+
+coveralls_report_coverage() {
+  describe ":star: report code coverage"
+  local repo_token=$1
+  local author_name=$(git log -1 --pretty=format:'%ae')
+  local sha=$(git rev-parse HEAD)
+  local message=$(git log -1 --pretty=%B)
+  local branch=$(git rev-parse --abbrev-ref HEAD)
+  mix coveralls.post \
+    --token "$repo_token" \
+    --branch "$branch" \
+    --committer "$author_name" \
+    --message "$message" \
+    --sha "$sha"
+}
