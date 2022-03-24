@@ -16,8 +16,9 @@ mix compile
 describe "Publishing the package to :flowerwork: organization on hex.pm"
 mix hex.publish --yes
 
-version="v$(mix run -e "IO.puts BuildpacksRegistryApi.MixProject.version")"
+semvar_version=$(mix run -e "IO.puts BuildpacksRegistryApi.MixProject.version" --no-start)
+git_version="v$version"
 describe "Creating git tag $version"
 git fetch --prune --prune-tags --tags origin
-git tag $version
+git tag $git_version
 git push origin --tags
