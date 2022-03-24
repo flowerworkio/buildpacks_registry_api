@@ -1,6 +1,6 @@
 defmodule BuildpacksRegistryApi.CacheClientTest do
   alias BuildpacksRegistryApi.CacheClient
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest BuildpacksRegistryApi.CacheClient
 
   defp get_state do
