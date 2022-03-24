@@ -8,7 +8,7 @@ defmodule BuildpacksRegistryApi.CacheClientTest do
   end
 
   test "#clear empties the cache" do
-    assert %{status: "OK"} = CacheClient.get("/healthz", %{})
+    assert %{status: "OK"} = CacheClient.get!("/healthz", %{})
     state = get_state()
     assert Enum.count(state.cache) != 0
     CacheClient.clear()
@@ -122,10 +122,10 @@ defmodule BuildpacksRegistryApi.CacheClientTest do
     end
 
     test "with cache it returns the API call response from cache" do
-      assert %{status: "OK"} = CacheClient.get("/healthz", %{})
+      assert %{status: "OK"} = CacheClient.get!("/healthz", %{})
       state1 = get_state()
 
-      assert %{status: "OK"} = CacheClient.get("/healthz", %{})
+      assert %{status: "OK"} = CacheClient.get!("/healthz", %{})
       state2 = get_state()
 
       %{cache_timeout: cache_timeout} = CacheClient.config()
@@ -136,10 +136,10 @@ defmodule BuildpacksRegistryApi.CacheClientTest do
     test "After cache expiration it returns the API call and adds it to cache" do
       CacheClient.set_cache_timeout(1)
 
-      assert %{status: "OK"} = CacheClient.get("/healthz", %{})
+      assert %{status: "OK"} = CacheClient.get!("/healthz", %{})
       state1 = get_state()
       :timer.sleep(1)
-      assert %{status: "OK"} = CacheClient.get("/healthz", %{})
+      assert %{status: "OK"} = CacheClient.get!("/healthz", %{})
       state2 = get_state()
 
       %{cache_timeout: cache_timeout} = CacheClient.config()

@@ -181,7 +181,7 @@ defmodule BuildpacksRegistryApi.Client do
   """
   def search(term) do
     params = %{matches: term}
-    response = get("/search", params)
+    response = get!("/search", params)
     Jason.decode!(response, keys: :atoms)
   end
 
@@ -223,7 +223,7 @@ defmodule BuildpacksRegistryApi.Client do
   """
   @spec buildpack_version_list(binary(), binary()) :: map()
   def buildpack_version_list(namespace, name) do
-    response = get("/buildpacks/#{namespace}/#{name}")
+    response = get!("/buildpacks/#{namespace}/#{name}")
     Jason.decode!(response, keys: :atoms)
   end
 
@@ -253,7 +253,7 @@ defmodule BuildpacksRegistryApi.Client do
   """
   @spec buildpack_version_info(binary(), binary(), binary()) :: map()
   def buildpack_version_info(namespace, name, version) do
-    response = get("/buildpacks/#{namespace}/#{name}/#{version}")
+    response = get!("/buildpacks/#{namespace}/#{name}/#{version}")
     Jason.decode!(response, keys: :atoms)
   end
 
@@ -274,7 +274,7 @@ defmodule BuildpacksRegistryApi.Client do
   end
 
   @doc false
-  def get(path, query_params \\ %{}) do
+  def get!(path, query_params \\ %{}) do
     url = process_url(path, query_params)
     url = String.to_charlist(url)
     Logger.debug("Fetching #{url}")

@@ -50,7 +50,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
   end
 
   @doc false
-  def get(path, query_params) do
+  def get!(path, query_params) do
     GenServer.call(@name, {:return_cache_or_get, path, query_params})
   end
 
@@ -214,7 +214,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
       ]
   """
   def search(term) do
-    get("/search", %{matches: term})
+    get!("/search", %{matches: term})
   end
 
   @doc """
@@ -255,7 +255,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
   """
   @spec buildpack_version_list(binary(), binary()) :: map()
   def buildpack_version_list(namespace, name) do
-    get("/buildpacks/#{namespace}/#{name}", %{})
+    get!("/buildpacks/#{namespace}/#{name}", %{})
   end
 
   @doc """
@@ -284,7 +284,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
   """
   @spec buildpack_version_info(binary(), binary(), binary()) :: map()
   def buildpack_version_info(namespace, name, version) do
-    get("/buildpacks/#{namespace}/#{name}/#{version}", %{})
+    get!("/buildpacks/#{namespace}/#{name}/#{version}", %{})
   end
 
   # Server callbacks
@@ -340,7 +340,7 @@ defmodule BuildpacksRegistryApi.CacheClient do
   end
 
   defp fetch_and_cache(path, params, state) do
-    response = Client.get(path, params) |> Jason.decode!(keys: :atoms)
+    response = Client.get!(path, params) |> Jason.decode!(keys: :atoms)
     url = BuildpacksRegistryApi.Client.process_url(path, params)
 
     new_cache =

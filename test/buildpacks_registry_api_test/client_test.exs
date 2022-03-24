@@ -8,7 +8,7 @@ defmodule BuildpacksRegistryApi.ClientTest do
   end
 
   test "#get bad URL raises RuntimeError that it couldn't fetch url" do
-    assert_raise RuntimeError, ~r/couldn\'t fetch/, fn -> Client.get("/bogus_url") end
+    assert_raise RuntimeError, ~r/couldn\'t fetch/, fn -> Client.get!("/bogus_url") end
   end
 
   test "GET /search returns a list of buildpacks" do
