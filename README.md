@@ -1,7 +1,12 @@
 # Buildpacks Registry API for Elixir
 
 [![Build status](https://badge.buildkite.com/e2f3cfac457b7e836ca3a434c8e8a5ad22cecd84432270630a.svg)](https://buildkite.com/flowerwork/buildpacks-registry-api)
-[![Coverage Status](https://coveralls.io/repos/github/flowerworkio/buildpacks_registry_api/badge.svg?branch=main)](https://coveralls.io/github/flowerworkio/buildpacks_registry_api?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/flowerworkio/buildpacks_registry_api/badge.svg?branch=main)](https://coveralls.io/github/flowerworkio/buildpacks_registry_api)
+[![Module Version](https://img.shields.io/hexpm/v/buildpacks_registry_api.svg)](https://hex.pm/packages/buildpacks_registry_api)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-lightgreen.svg)](https://hexdocs.pm/buildpacks_registry_api/)
+[![Total Download](https://img.shields.io/hexpm/dt/buildpacks_registry_api.svg)](https://hex.pm/packages/buildpacks_registry_api)
+[![License](https://img.shields.io/hexpm/l/buildpacks_registry_api.svg)](https://github.com/flowerworkio/buildpack_registry_api/blob/master/LICENSE)
+[![Last Updated](https://img.shields.io/github/last-commit/flowerworkio/buildpacks_registry_api.svg)](https://github.com/flowerworkio/buildpacks_registry_api/commits/master)
 
 ## Installation
 
