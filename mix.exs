@@ -8,7 +8,7 @@ defmodule BuildpacksRegistryApi.MixProject do
   @source_url "https://github.com/flowerworkio/buildpacks_registry_api"
   @api_spec_url "https://github.com/buildpacks/registry-api"
   @buildpacks_registry_url "https://registry.buildpacks.io"
-  @version File.read!("./VERSION") |> String.trim()
+  @version "0.2.2"
   def version, do: @version
 
   def project do
