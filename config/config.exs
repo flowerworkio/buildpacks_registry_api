@@ -5,7 +5,5 @@ if Mix.env() == :test do
 end
 
 if Mix.env() == :test do
-  Application.put_env(BuildpacksRegistryApi, :endpoint, "http://localhost:9000/api/v1")
-else
-  Application.put_env(BuildpacksRegistryApi, :endpoint, "https://registry.buildpacks.io/api/v1")
+  Application.put_env(:buildpacks_registry_api, :endpoint, "http://localhost:9000/api/v1")
 end

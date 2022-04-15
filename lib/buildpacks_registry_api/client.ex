@@ -15,7 +15,16 @@ defmodule BuildpacksRegistryApi.Client do
       [endpoint: "http://localhost:9000/api/v1"]
   """
   def config do
-    Application.get_all_env(BuildpacksRegistryApi)
+    endpoint =
+      Application.get_env(
+        :buildpacks_registry_api,
+        :endpoint,
+        "https://registry.buildpacks.io/api/v1"
+      )
+
+    %{
+      endpoint: endpoint
+    }
   end
 
   defp endpoint, do: config()[:endpoint]
